@@ -1,51 +1,57 @@
 <template>
-  <div class="">
+  <div class="login-panel">
     <el-row>
-      <el-col :span="10" :offset="7">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane label="用户登录" name="first">
-            <el-col>
-              <el-form :model="dynamicValidateForm" label-width="100px" ref="dynamicValidateForm">
-                <el-form-item
-                  prop="email"
-                  label="邮箱"
-                  :rules="rules.email">
-                  <el-input v-model="dynamicValidateForm.email"></el-input>
-                </el-form-item>
-                <el-form-item
-                  prop="password"
-                  label="密码"
-                  :rules="rules.password">
-                  <el-input type="password" v-model="dynamicValidateForm.password"></el-input>
-                </el-form-item>
-                <el-button type="primary" @click="submitForm('dynamicValidateForm')">登录</el-button>
-                <el-button @click="resetForm('dynamicValidateForm')">重置</el-button>
-              </el-form>
-            </el-col>
-          </el-tab-pane>
-          <el-tab-pane label="用户注册" name="second">
-            <Register></Register>
-          </el-tab-pane>
-        </el-tabs>
+      <el-col :span="8" :offset="8">
+        <div class="auth-login">
+          <h1 class="login-title">登录</h1>
+          <el-form
+            :model="ruleForm"
+            ref="ruleForm"
+            class="auth-login-form">
+            <el-form-item label="" prop="userName">
+              <el-input
+                v-model="ruleForm.userName"
+                :rules="rules.userName"
+                :placeholder="'请填写手机号或邮箱'"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="" prop="password">
+              <el-input
+                type="password"
+                v-model="ruleForm.password"
+                :rules="rules.password"
+                :placeholder="'请输入密码'"
+                auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="记住密码">
+              <el-switch on-text="" off-text="" v-model="ruleForm.delivery"></el-switch>
+            </el-form-item>
+            <el-button
+              type="primary"
+              class="submit-button"
+              @click="submitForm('ruleForm')">登录</el-button>
+            <div class="login-form-more">
+              <span class="register-button">没有账号? <i @click.stop="register()">注册</i></span>
+              <span class="forget-password">忘记密码</span>
+            </div>
+          </el-form>
+        </div>
       </el-col>
     </el-row>
   </div>
 </template>
 <script>
-  import Register from './Register'
   import api from '../../store/api'
   export default {
-    name: 'login',
     data () {
       return {
-        dynamicValidateForm: {
-          email: '',
-          password: ''
+        ruleForm: {
+          userName: '',
+          password: '',
+          delivery: false
         },
-        activeName: 'first',
-        // 输入校验
         rules: {
-          email: [
+          userName: [
             {
               required: true,
               message: '请输入邮箱地址',
@@ -66,19 +72,11 @@
       }
     },
     methods: {
-      handleClick (tab, event) {
-      },
-      // 重置
-      resetForm (formName) {
-        this.$refs[formName].resetFields()
-      },
-      // 登录
       submitForm (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            let opt = this.dynamicValidateForm
+            let opt = this.ruleForm
             api.UserLogin(opt).then(({data}) => {
-              console.log(data)
               if (!data.info) {
                 this.$message({
                   type: 'info',
@@ -90,8 +88,6 @@
                   type: 'success',
                   message: '登录成功'
                 })
-                this.$store.dispatch('actionUserToken', data.token)
-                this.$store.dispatch('actionUserName', data.email)
                 let redirect = decodeURIComponent(this.$route.query.redirect || '/')
                 this.$router.push({
                   path: redirect
@@ -104,18 +100,95 @@
               }
             })
           } else {
-            console.log('Error Submit!!')
             return false
           }
         })
+      },
+      register () {
+        this.$router.push('/register')
       }
     },
     components: {
-      Register
     }
   }
 </script>
 <style lang="scss">
-  .el-col {
+  .login-panel {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    background-color: #141a48;
+    background-image: url('../../../static/images/bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+    .el-row {
+      height: 100%;
+      .auth-login {
+        width: 400px;
+        max-width: 100%;
+        margin: 60px auto 0;
+        padding: 50px 50px 30px;
+        background-color: #fff;
+        border-radius: 4px;
+        box-shadow: 0 0 8px rgba(0,0,0,.1);
+        vertical-align: middle;
+        font-size: 1.167rem;
+        box-sizing: border-box;
+        .login-title {
+          font-size: 1.5rem;
+          margin: 0 0 2rem;
+          font-family: -apple-system,PingFang SC,Hiragino Sans GB,Arial,Microsoft YaHei,Helvetica Neue,sans-serif;
+          text-rendering: optimizeLegibility;
+          color: #333;
+        }
+        .auth-login-form {
+          input {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #e9e9e9;
+            border-radius: 2px;
+            outline: none;
+            box-sizing: border-box;
+          }
+          .submit-button {
+            width: 100%;
+            height: 3.334rem;
+            color: #fff;
+            background-color: #007fff;
+            border-radius: 2px;
+            outline: none;
+            box-sizing: border-box;
+            cursor: pointer;
+          }
+        }
+        .el-switch {
+          position: absolute;
+          left: 70px;
+          top: 8px;
+        }
+        .login-form-more {
+          width: 100%;
+          height: 3.334rem;
+          line-height: 3.334rem;
+          color: #8b9196;
+          .register-button {
+            margin-right: 120px;
+            i {
+              color: #007fff;
+              cursor: pointer;
+            }
+          }
+          .forget-password {
+            color: #007fff;
+            cursor: pointer;
+          }
+        }
+      }
+    }
   }
 </style>

@@ -4,14 +4,24 @@ import Cookies from 'js-cookie'
 import main from '../views/main'
 Vue.use(Router)
 
-const loginRouter = {
-  path: '/login',
-  name: 'login',
-  meta: {
-    title: 'Login - 登录'
+const userRouter = [
+  {
+    path: '/login',
+    name: 'login',
+    meta: {
+      title: 'Login - 登录'
+    },
+    component: resolve => { require(['../views/login/Login.vue'], resolve) }
   },
-  component: resolve => { require(['../views/login/Login.vue'], resolve) }
-}
+  {
+    path: '/register',
+    name: 'register',
+    meta: {
+      title: 'Register - 注册'
+    },
+    component: resolve => { require(['../views/login/Register.vue'], resolve) }
+  }
+]
 
 const appRouter = [
 ]
@@ -25,7 +35,7 @@ export const otherRouter = {
 }
 
 const routers = [
-  loginRouter,
+  ...userRouter,
   otherRouter,
   ...appRouter
 ]

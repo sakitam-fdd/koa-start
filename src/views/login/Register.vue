@@ -1,56 +1,48 @@
 <template>
-  <div class="">
-    <el-form :model="registerValidateForm" label-width="100px" ref="registerValidateForm">
-      <el-form-item
-        prop="email"
-        label="邮箱"
-        :rules="rules.email">
-        <el-input v-model="registerValidateForm.email"></el-input>
-      </el-form-item>
-      <el-form-item
-        prop="password"
-        label="密码"
-        :rules="rules.password">
-        <el-input type="password" v-model="registerValidateForm.password"></el-input>
-      </el-form-item>
-      <el-form-item
-        prop="checkPass"
-        label="再次输入"
-        :rules="rules.checkPass">
-        <el-input type="password" v-model="registerValidateForm.checkPass"></el-input>
-      </el-form-item>
-      <el-button type="primary" @click="submitForm('registerValidateForm')">注册</el-button>
-      <el-button @click="resetForm('registerValidateForm')">重置</el-button>
-    </el-form>
+  <div class="register-panel">
+    <el-row>
+      <el-col :span="8" :offset="8">
+        <div class="auth-register">
+          <h1 class="register-title">注册</h1>
+          <el-form
+            :model="ruleForm"
+            ref="ruleForm"
+            class="auth-register-form">
+            <el-form-item
+              prop="email"
+              label="邮箱"
+              :rules="rules.email">
+              <el-input v-model="registerForm.email"></el-input>
+            </el-form-item>
+            <el-form-item
+              prop="password"
+              label="密码"
+              :rules="rules.password">
+              <el-input type="password" v-model="registerForm.password"></el-input>
+            </el-form-item>
+            <el-form-item
+              prop="checkPass"
+              label="再次输入"
+              :rules="rules.checkPassword">
+              <el-input type="password" v-model="registerForm.checkPassword"></el-input>
+            </el-form-item>
+            <el-button type="primary" @click="submitForm('registerForm')">注册</el-button>
+            <el-button @click="resetForm('registerForm')">重置</el-button>
+          </el-form>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script>
   import api from '../../store/api'
   export default {
-    name: 'login',
     data () {
-      // 密码安全性要求
-      let validatePass1 = (rule, value, callback) => {
-        // 6-16位, 数字, 字母, 字符至少包含两种, 同时不能包含中文和空格
-        let reg = /(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^[^\s\u4e00-\u9fa5]{6,16}$/
-        if (!reg.test(value)) {
-          callback(new Error('密码长度需6-16位，且包含字母和字符'))
-        } else {
-          callback()
-        }
-      }
-      // 监测两次密码是否相同
-      let validatePass2 = (rule, value, callback) => {
-        value === '' ? callback(new Error('请再次输入密码'))
-          : value !== this.registerValidateForm.password ? callback(new Error('两次输入密码不一致!'))
-          : callback()
-      }
       return {
-        registerValidateForm: {
+        registerForm: {
           email: '',
           password: '',
-          checkPass: '',
-          first: 'first'
+          checkPassword: ''
         },
         rules: {
           email: [
@@ -72,18 +64,18 @@
               trigger: 'blur'
             },
             {
-              validator: validatePass1,
+              validator: this.validatePass,
               trigger: 'blur'
             }
           ],
-          checkPass: [
+          checkPassword: [
             {
               required: true,
               message: '请再次输入密码',
               trigger: 'blur'
             },
             {
-              validator: validatePass2,
+              validator: this.validatePassSample,
               trigger: 'blur'
             }
           ]
@@ -97,15 +89,13 @@
       submitForm (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            let opt = this.registerValidateForm
+            let opt = this.registerForm
             api.userRegister(opt).then(({data}) => {
               if (data.success) {
                 this.$message({
                   type: 'success',
                   message: `注册成功，请登录`
                 })
-                //  Register 设计为了 Login 的组件，所以成功跳转时刷新一次页面
-                this.$router.go(0)
                 this.$router.push('/login')
               } else {
                 this.$message({
@@ -117,11 +107,84 @@
               console.log(err)
             })
           } else {
-            console.log('Error Submit!!')
             return false
           }
         })
+      },
+      validatePass (rule, value, callback) {
+        // 6-16位, 数字, 字母, 字符至少包含两种, 同时不能包含中文和空格
+        let reg = /(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^[^\s\u4e00-\u9fa5]{6,16}$/
+        if (!reg.test(value)) {
+          callback(new Error('密码长度需6-16位，且包含字母和字符'))
+        } else {
+          callback()
+        }
+      },
+      validatePassSample (rule, value, callback) {
+        value === '' ? callback(new Error('请再次输入密码'))
+          : value !== this.registerForm.password ? callback(new Error('两次输入密码不一致!'))
+          : callback()
       }
+    },
+    components: {
     }
   }
 </script>
+<style lang="scss">
+  .register-panel {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    background-color: #141a48;
+    background-image: url('../../../static/images/bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+    .el-row {
+      height: 100%;
+      .auth-register {
+        width: 400px;
+        max-width: 100%;
+        margin: 60px auto 0;
+        padding: 50px 50px 30px;
+        background-color: #fff;
+        border-radius: 4px;
+        box-shadow: 0 0 8px rgba(0,0,0,.1);
+        vertical-align: middle;
+        font-size: 1.167rem;
+        box-sizing: border-box;
+        .register-title {
+          font-size: 1.5rem;
+          margin: 0 0 2rem;
+          font-family: -apple-system,PingFang SC,Hiragino Sans GB,Arial,Microsoft YaHei,Helvetica Neue,sans-serif;
+          text-rendering: optimizeLegibility;
+          color: #333;
+        }
+        .auth-login-form {
+          input {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #e9e9e9;
+            border-radius: 2px;
+            outline: none;
+            box-sizing: border-box;
+          }
+          .submit-button {
+            width: 100%;
+            height: 3.334rem;
+            color: #fff;
+            background-color: #007fff;
+            border-radius: 2px;
+            outline: none;
+            box-sizing: border-box;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+</style>
