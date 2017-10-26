@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://127.0.0.1:27017/koa-start')
+mongoose.connect('mongodb://127.0.0.1/koa-start')
 
 let db = mongoose.connection
 // 防止Mongoose: mpromise 错误

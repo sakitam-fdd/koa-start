@@ -1,6 +1,4 @@
 import axios from 'axios'
-const baseURL = 'http://127.0.0.1:5555'
-axios.defaults.baseURL = baseURL
 axios.default.timeout = 5000
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 const instance = axios.create()

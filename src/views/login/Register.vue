@@ -30,14 +30,14 @@
                 :placeholder="'密码'"
                 v-model="registerForm.password"></el-input>
             </el-form-item>
-            <el-form-item
-              prop="checkPass"
-              :rules="rules.checkPassword">
-              <el-input
-                type="password"
-                :placeholder="'再次输入'"
-                v-model="registerForm.checkPassword"></el-input>
-            </el-form-item>
+            <!--<el-form-item-->
+              <!--prop="checkPass"-->
+              <!--:rules="rules.checkPassword">-->
+              <!--<el-input-->
+                <!--type="password"-->
+                <!--:placeholder="'再次输入'"-->
+                <!--v-model="registerForm.checkPassword"></el-input>-->
+            <!--</el-form-item>-->
             <el-button type="primary" @click="submitForm('registerForm')">注册</el-button>
             <el-button @click="resetForm('registerForm')">重置</el-button>
             <div class="goto-login" @click="gLogin()">已有账号登录</div>
@@ -51,6 +51,24 @@
   import api from '../../store/api'
   export default {
     data () {
+      const validatePass = (rule, value, callback) => {
+        // 6-16位, 数字, 字母, 字符至少包含两种, 同时不能包含中文和空格
+        let reg = /(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^[^\s\u4e00-\u9fa5]{6,16}$/
+        if (!reg.test(value)) {
+          callback(new Error('密码长度需6-16位，且包含字母和字符'))
+        } else {
+          callback()
+        }
+      }
+      const validatePassSample = (rule, value, callback) => {
+        if (value === '') {
+          callback()
+        } else if (value && value !== this.registerForm.password) {
+          callback(new Error('两次输入密码不一致!'))
+        } else {
+          callback()
+        }
+      }
       return {
         registerForm: {
           userName: '',
@@ -85,18 +103,13 @@
               trigger: 'blur'
             },
             {
-              validator: this.validatePass,
+              validator: validatePass,
               trigger: 'blur'
             }
           ],
           checkPassword: [
             {
-              required: true,
-              message: '请再次输入密码',
-              trigger: 'blur'
-            },
-            {
-              validator: this.validatePassSample,
+              validator: validatePassSample,
               trigger: 'blur'
             }
           ]
@@ -131,20 +144,6 @@
             return false
           }
         })
-      },
-      validatePass (rule, value, callback) {
-        // 6-16位, 数字, 字母, 字符至少包含两种, 同时不能包含中文和空格
-        let reg = /(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^[^\s\u4e00-\u9fa5]{6,16}$/
-        if (!reg.test(value)) {
-          callback(new Error('密码长度需6-16位，且包含字母和字符'))
-        } else {
-          callback()
-        }
-      },
-      validatePassSample (rule, value, callback) {
-        value === '' ? callback(new Error('请再次输入密码'))
-          : value !== this.registerForm.password ? callback(new Error('两次输入密码不一致!'))
-          : callback()
       },
       gLogin () {
         this.$router.push('/login')
