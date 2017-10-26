@@ -8,7 +8,11 @@
     "dev": "node build/dev-server.js",
     "start": "npm run dev",
     "build": "node build/build.js",
-    "lint": "eslint --ext .js,.vue src"
+    "lint": "eslint --ext .js,.vue src",
+    "start:serve": "node server/bin/www",
+    "dev:serve": "./node_modules/.bin/nodemon server/bin/www",
+    "debug:serve": "node --inspect server/bin/www",
+    "prd": "pm2 start bin/www"
   },
   "dependencies": {
     "axios": "^0.17.0",
@@ -22,6 +26,25 @@
     "vuex": "^3.0.0"
   },
   "devDependencies": {
+    "debug": "^2.6.3",
+    "http2": "^3.3.6",
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^3.2.0",
+    "koa-compress": "^2.0.0",
+    "koa-convert": "^1.2.0",
+    "koa-json": "^2.0.2",
+    "koa-logger": "^2.0.1",
+    "koa-onerror": "^1.2.1",
+    "koa-router": "^7.1.1",
+    "koa-static": "^3.0.0",
+    "koa-views": "^5.2.1",
+    "koa2-cors": "^2.0.3",
+    "restc": "^0.1.0",
+    "mongoose": "^4.11.0",
+    "jsonwebtoken": "^7.4.0",
+    "moment": "^2.18.1",
+    "objectid-to-timestamp": "^1.3.0",
+    "sha1": "^1.1.1",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^7.1.1",

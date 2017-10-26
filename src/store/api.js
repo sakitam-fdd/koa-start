@@ -1,4 +1,6 @@
 import axios from 'axios'
+const baseURL = 'http://127.0.0.1:5555'
+axios.defaults.baseURL = baseURL
 axios.default.timeout = 5000
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 const instance = axios.create()
@@ -32,9 +34,5 @@ export default {
   // 获取用户
   getUser () {
     return instance.get('/api/user')
-  },
-  // 删除用户
-  delUser (data) {
-    return instance.post('/api/delUser', data)
   }
 }
