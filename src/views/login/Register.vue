@@ -5,29 +5,42 @@
         <div class="auth-register">
           <h1 class="register-title">注册</h1>
           <el-form
-            :model="ruleForm"
-            ref="ruleForm"
+            :model="registerForm"
+            ref="registerForm"
             class="auth-register-form">
             <el-form-item
+              prop="userName"
+              :rules="rules.userName">
+              <el-input
+                :placeholder="'请填写用户名'"
+                v-model="registerForm.userName"></el-input>
+            </el-form-item>
+            <el-form-item
               prop="email"
-              label="邮箱"
               :rules="rules.email">
-              <el-input v-model="registerForm.email"></el-input>
+              <el-input
+                :placeholder="'请填写邮箱'"
+                v-model="registerForm.email"></el-input>
             </el-form-item>
             <el-form-item
               prop="password"
-              label="密码"
               :rules="rules.password">
-              <el-input type="password" v-model="registerForm.password"></el-input>
+              <el-input
+                type="password"
+                :placeholder="'密码'"
+                v-model="registerForm.password"></el-input>
             </el-form-item>
             <el-form-item
               prop="checkPass"
-              label="再次输入"
               :rules="rules.checkPassword">
-              <el-input type="password" v-model="registerForm.checkPassword"></el-input>
+              <el-input
+                type="password"
+                :placeholder="'再次输入'"
+                v-model="registerForm.checkPassword"></el-input>
             </el-form-item>
             <el-button type="primary" @click="submitForm('registerForm')">注册</el-button>
             <el-button @click="resetForm('registerForm')">重置</el-button>
+            <div class="goto-login" @click="gLogin()">已有账号登录</div>
           </el-form>
         </div>
       </el-col>
@@ -40,11 +53,19 @@
     data () {
       return {
         registerForm: {
+          userName: '',
           email: '',
           password: '',
           checkPassword: ''
         },
         rules: {
+          userName: [
+            {
+              required: true,
+              message: '请输入用户名',
+              trigger: 'blur'
+            }
+          ],
           email: [
             {
               required: true,
@@ -124,6 +145,9 @@
         value === '' ? callback(new Error('请再次输入密码'))
           : value !== this.registerForm.password ? callback(new Error('两次输入密码不一致!'))
           : callback()
+      },
+      gLogin () {
+        this.$router.push('/login')
       }
     },
     components: {
@@ -140,7 +164,7 @@
     left: 0;
     text-align: center;
     background-color: #141a48;
-    background-image: url('../../../static/images/bg.png');
+    background-image: url('https://cn.bing.com/az/hprichbg/rb/HallstattAustria_ZH-CN10534000934_1920x1080.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     overflow: hidden;
@@ -164,25 +188,31 @@
           text-rendering: optimizeLegibility;
           color: #333;
         }
-        .auth-login-form {
-          input {
-            padding: 10px;
-            width: 100%;
-            border: 1px solid #e9e9e9;
-            border-radius: 2px;
-            outline: none;
-            box-sizing: border-box;
-          }
-          .submit-button {
-            width: 100%;
-            height: 3.334rem;
-            color: #fff;
-            background-color: #007fff;
-            border-radius: 2px;
-            outline: none;
-            box-sizing: border-box;
-            cursor: pointer;
-          }
+        input {
+          padding: 10px;
+          width: 100%;
+          border: 1px solid #e9e9e9;
+          border-radius: 2px;
+          outline: none;
+          box-sizing: border-box;
+        }
+        button {
+          width: 44%;
+          height: 3.334rem;
+          color: #fff;
+          background-color: #007fff;
+          border-radius: 3px;
+          outline: none;
+          box-sizing: border-box;
+          cursor: pointer;
+        }
+        .goto-login {
+          margin-top: 10px;
+          width: 100%;
+          height: 3.334rem;
+          line-height: 3.334rem;
+          color: #007fff;
+          cursor: pointer;
         }
       }
     }

@@ -44,7 +44,9 @@ const router = new Router({
   routes: routers
 })
 router.beforeEach((to, from, next) => {
-  if (!Cookies.get('user') && to.name !== 'login') {  // 判断是否已经登录且前往的页面不是登录页
+  if (to.name === 'register') {
+    next()
+  } else if (!Cookies.get('user') && to.name !== 'login') {  // 判断是否已经登录且前往的页面不是登录页
     next({
       name: 'login'
     })

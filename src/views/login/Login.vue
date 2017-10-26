@@ -5,31 +5,33 @@
         <div class="auth-login">
           <h1 class="login-title">登录</h1>
           <el-form
-            :model="ruleForm"
-            ref="ruleForm"
+            :model="loginForm"
+            ref="loginForm"
             class="auth-login-form">
-            <el-form-item label="" prop="userName">
+            <el-form-item
+              prop="userName"
+              :rules="rules.userName">
               <el-input
-                v-model="ruleForm.userName"
-                :rules="rules.userName"
+                v-model="loginForm.userName"
                 :placeholder="'请填写手机号或邮箱'"
               ></el-input>
             </el-form-item>
-            <el-form-item label="" prop="password">
+            <el-form-item
+              prop="password"
+              :rules="rules.password">
               <el-input
                 type="password"
-                v-model="ruleForm.password"
-                :rules="rules.password"
+                v-model="loginForm.password"
                 :placeholder="'请输入密码'"
                 auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="记住密码">
-              <el-switch on-text="" off-text="" v-model="ruleForm.delivery"></el-switch>
+              <el-switch v-model="loginForm.delivery"></el-switch>
             </el-form-item>
             <el-button
               type="primary"
               class="submit-button"
-              @click="submitForm('ruleForm')">登录</el-button>
+              @click="submitForm('loginForm')">登录</el-button>
             <div class="login-form-more">
               <span class="register-button">没有账号? <i @click.stop="register()">注册</i></span>
               <span class="forget-password">忘记密码</span>
@@ -45,7 +47,7 @@
   export default {
     data () {
       return {
-        ruleForm: {
+        loginForm: {
           userName: '',
           password: '',
           delivery: false
@@ -122,7 +124,7 @@
     left: 0;
     text-align: center;
     background-color: #141a48;
-    background-image: url('../../../static/images/bg.png');
+    background-image: url('https://cn.bing.com/az/hprichbg/rb/HallstattAustria_ZH-CN10534000934_1920x1080.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     overflow: hidden;
