@@ -9,11 +9,11 @@
             ref="registerForm"
             class="auth-register-form">
             <el-form-item
-              prop="userName"
-              :rules="rules.userName">
+              prop="username"
+              :rules="rules.username">
               <el-input
                 :placeholder="'请填写用户名'"
-                v-model="registerForm.userName"></el-input>
+                v-model="registerForm.username"></el-input>
             </el-form-item>
             <el-form-item
               prop="email"
@@ -30,14 +30,14 @@
                 :placeholder="'密码'"
                 v-model="registerForm.password"></el-input>
             </el-form-item>
-            <!--<el-form-item-->
-              <!--prop="checkPass"-->
-              <!--:rules="rules.checkPassword">-->
-              <!--<el-input-->
-                <!--type="password"-->
-                <!--:placeholder="'再次输入'"-->
-                <!--v-model="registerForm.checkPassword"></el-input>-->
-            <!--</el-form-item>-->
+            <el-form-item
+              prop="checkpassword"
+              :rules="rules.checkpassword">
+              <el-input
+                type="password"
+                :placeholder="'再次输入'"
+                v-model="registerForm.checkpassword"></el-input>
+            </el-form-item>
             <el-button type="primary" @click="submitForm('registerForm')">注册</el-button>
             <el-button @click="resetForm('registerForm')">重置</el-button>
             <div class="goto-login" @click="gLogin()">已有账号登录</div>
@@ -71,13 +71,13 @@
       }
       return {
         registerForm: {
-          userName: '',
+          username: '',
           email: '',
           password: '',
-          checkPassword: ''
+          checkpassword: ''
         },
         rules: {
-          userName: [
+          username: [
             {
               required: true,
               message: '请输入用户名',
@@ -107,7 +107,7 @@
               trigger: 'blur'
             }
           ],
-          checkPassword: [
+          checkpassword: [
             {
               validator: validatePassSample,
               trigger: 'blur'

@@ -9,11 +9,11 @@
             ref="loginForm"
             class="auth-login-form">
             <el-form-item
-              prop="userName"
-              :rules="rules.userName">
+              prop="username"
+              :rules="rules.username">
               <el-input
-                v-model="loginForm.userName"
-                :placeholder="'请填写手机号或邮箱'"
+                v-model="loginForm.username"
+                :placeholder="'请输入用户名或者邮箱'"
               ></el-input>
             </el-form-item>
             <el-form-item
@@ -26,7 +26,7 @@
                 auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="记住密码">
-              <el-switch v-model="loginForm.delivery"></el-switch>
+              <el-switch v-model="delivery"></el-switch>
             </el-form-item>
             <el-button
               type="primary"
@@ -48,20 +48,15 @@
     data () {
       return {
         loginForm: {
-          userName: '',
-          password: '',
-          delivery: false
+          username: '',
+          password: ''
         },
+        delivery: false,
         rules: {
-          userName: [
+          username: [
             {
               required: true,
-              message: '请输入邮箱地址',
-              trigger: 'blur'
-            },
-            {
-              type: 'email',
-              message: '请输入正确的邮箱地址',
+              message: '请输入用户名或者邮箱',
               trigger: 'blur'
             }
           ],
@@ -77,7 +72,7 @@
       submitForm (formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            let opt = this.ruleForm
+            let opt = this.loginForm
             api.UserLogin(opt).then(({data}) => {
               if (!data.info) {
                 this.$message({
