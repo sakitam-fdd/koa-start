@@ -116,6 +116,13 @@
         }
       }
     },
+    mounted () {
+      api.wallpaper().then(res => {
+        if (res['data']['success']) {
+          document.querySelector('.register-panel').style.backgroundImage = 'url(\'https://cn.bing.com' + res['data']['data']['images'][0]['url'] + '\')'
+        }
+      })
+    },
     methods: {
       resetForm (formName) {
         this.$refs[formName].resetFields()

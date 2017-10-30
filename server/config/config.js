@@ -1,5 +1,5 @@
 module.exports = {
-  port: 1111,
+  port: 8888,
   assets: 'assets',
   db: {
     user: 'postgres',

@@ -68,6 +68,13 @@
         }
       }
     },
+    mounted () {
+      api.wallpaper().then(res => {
+        if (res['data']['success']) {
+          document.querySelector('.login-panel').style.backgroundImage = 'url(\'https://cn.bing.com' + res['data']['data']['images'][0]['url'] + '\')'
+        }
+      })
+    },
     methods: {
       submitForm (formName) {
         this.$refs[formName].validate((valid) => {

@@ -23,14 +23,32 @@ instance.interceptors.response.use(response => {
 export default {
   // 用户注册
   userRegister (data) {
-    return instance.post('/api/register', data)
+    return instance.post('/register', data, {
+      baseURL: 'http://localhost:8888'
+    })
   },
   // 用户登录
   UserLogin (data) {
-    return instance.post('/api/login', data)
+    return instance.post('/login', data, {
+      baseURL: 'http://localhost:8888'
+    })
   },
   // 获取用户
   getUser () {
-    return instance.get('/api/user')
+    return instance.get('/user', {
+      baseURL: 'http://localhost:8888'
+    })
+  },
+  wallpaper () {
+    return instance.get('/wallpaper', {
+      params: {
+        format: 'js',
+        idx: parseInt(Math.random() * 10),
+        n: 1,
+        nc: (new Date()).getTime(),
+        pid: 'hp'
+      },
+      baseURL: 'http://localhost:8888'
+    })
   }
 }
