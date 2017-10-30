@@ -4,7 +4,7 @@ module.exports = async (ctx, next) => {
     let token = ctx.request.header['authorization'].split(' ')[1]
     let decoded = jwt.decode(token, 'null')
     if (token && decoded.exp <= new Date() / 1000) {
-      ctx.status = 401;
+      ctx.status = 401
       ctx.body = {
         message: 'token过期'
       }

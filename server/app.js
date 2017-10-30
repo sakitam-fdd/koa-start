@@ -1,35 +1,31 @@
-/**
- * Created by FDD on 2017/10/26.
- * @desc 应用
- */
-
 const Koa = require('koa')
-const app = new Koa()
-const json = require('koa-json')
-const path = require('path')
-const onerror = require('koa-onerror')
-const bodyparser = require('koa-bodyparser')
+const http = require('http')
+const convert = require('koa-convert')
 const logger = require('koa-logger')
-const cors = require('koa2-cors')
-const compress = require('koa-compress')
-const restc = require('restc')
-// router
-const Router = require('koa-router');
-const index = require('./routes/index')
-// 父路由
-const router = new Router()
-// error handler
+const cors = require('koa-cors') // 跨域
+const onerror = require('koa-onerror') // 错误处理
+const resource = require('koa-static') // 静态资源托管
+// 用来解析body的中间件，比方说你通过post来传递表单，json数据，或者上传文件，在koa中是不容易获取的，通过koa-bodyparser解析之后，在koa中this.body就能直接获取到数据
+const bodyparser = require('koa-bodyparser')
+const compress = require('koa-compress') // 处理压缩的中间件
+const restc = require('restc') // RESTful Web 服务通常可以通过自动客户端或代表用户的应用程序访问
+const path = require('path')
+const routes = require('./routes')
+const config = require('./config/config')
+const app = new Koa()
 onerror(app)
+app.use(compress())
+app.use(restc.koa2())
+app.use(convert(cors()))
+app.use(convert(logger()))
 // middlewares
 app.use(bodyparser({
   enableTypes: ['json', 'form', 'text']
 }))
-app.use(json())
-app.use(logger())
-app.use(require('koa-static')(path.join(__dirname, '../', 'dist')))
-app.use(cors())
-app.use(compress())
-app.use(restc.koa2())
+app.use(resource(path.join(__dirname, '/'), {
+  index: 'views/index.html',
+  gzip: true
+}))
 // logger
 app.use(async (ctx, next) => {
   try {
@@ -42,8 +38,15 @@ app.use(async (ctx, next) => {
   }
 })
 
-router.use('/api', index.routes(), index.allowedMethods())
+// routes
+app.use(routes.routes(), routes.allowedMethods())
+app.on('error', (error, ctx) => {
+  console.log('错误' + JSON.stringify(ctx.onerror))
+  console.log('server error:' + error)
+})
 
-app.use(router.routes()).use(router.allowedMethods())
+http.createServer(app.callback()).listen(config.port).on('listening', function () {
+  console.log('正在监听端口: http://localhost:' + config.port)
+})
 
 module.exports = app
