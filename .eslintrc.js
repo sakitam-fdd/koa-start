@@ -2,24 +2,30 @@
 
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
   parserOptions: {
+    parser: 'babel-eslint',
     sourceType: 'module'
   },
   env: {
     browser: true
   },
-  extends: 'airbnb',
+  extends: [
+    'plugin:vue/recommended',
+    'airbnb-base',
+  ],
+  settings: {
+    'import/resolver': {
+      webpack: {
+        config: 'build/webpack.base.conf.js'
+      }
+    }
+  },
   plugins: [
-    'jsx-a11y',
-    'react'
+    'vue',
   ],
   // add your custom rules here
   rules: {
-    'react/forbid-prop-types': 0,
-    'react/require-default-props': 0,
     'import/prefer-default-export': 0,
-
     'no-plusplus': 0,
     'import/no-unresolved': 0,
     'no-param-reassign': 0,
@@ -33,6 +39,7 @@ module.exports = {
     'no-prototype-builtins': 0,
     'no-underscore-dangle': 0,
     'implicit-arrow-linebreak': 0,
+    'no-console': 'off',
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   },

@@ -1,37 +1,49 @@
 <template>
   <div class="login-panel">
     <el-row>
-      <el-col :span="8" :offset="8">
+      <el-col
+        :span="8"
+        :offset="8"
+      >
         <div class="auth-login">
-          <h1 class="login-title">登录</h1>
+          <h1 class="login-title">
+            登录
+          </h1>
           <el-form
-            :model="loginForm"
             ref="loginForm"
-            class="auth-login-form">
+            :model="loginForm"
+            class="auth-login-form"
+          >
             <el-form-item
               prop="username"
-              :rules="rules.username">
+              :rules="rules.username"
+            >
               <el-input
                 v-model="loginForm.username"
                 :placeholder="'请输入用户名或者邮箱'"
-              ></el-input>
+              />
             </el-form-item>
             <el-form-item
               prop="password"
-              :rules="rules.password">
+              :rules="rules.password"
+            >
               <el-input
-                type="password"
                 v-model="loginForm.password"
+                type="password"
                 :placeholder="'请输入密码'"
-                auto-complete="off"></el-input>
+                auto-complete="off"
+              />
             </el-form-item>
             <el-form-item label="记住密码">
-              <el-switch v-model="delivery"></el-switch>
+              <el-switch v-model="delivery" />
             </el-form-item>
             <el-button
               type="primary"
               class="submit-button"
-              @click="submitForm('loginForm')">登录</el-button>
+              @click="submitForm('loginForm')"
+            >
+              登录
+            </el-button>
             <div class="login-form-more">
               <span class="register-button">没有账号? <i @click.stop="register()">注册</i></span>
               <span class="forget-password">忘记密码</span>
@@ -43,78 +55,79 @@
   </div>
 </template>
 <script>
-  import api from '../../store/api'
-  export default {
-    data () {
-      return {
-        loginForm: {
-          username: '',
-          password: ''
-        },
-        delivery: false,
-        rules: {
-          username: [
-            {
-              required: true,
-              message: '请输入用户名或者邮箱',
-              trigger: 'blur'
-            }
-          ],
-          password: {
-            required: true,
-            message: '请输入密码',
-            trigger: 'blur'
-          }
-        }
-      }
-    },
-    mounted () {
-      api.wallpaper().then(res => {
-        if (res['data']['success']) {
-          document.querySelector('.login-panel').style.backgroundImage = 'url(\'https://cn.bing.com' + res['data']['data']['images'][0]['url'] + '\')'
-        }
-      })
-    },
-    methods: {
-      submitForm (formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            let opt = this.loginForm
-            api.UserLogin(opt).then(({data}) => {
-              if (!data.info) {
-                this.$message({
-                  type: 'info',
-                  message: '账号不存在'
-                })
-              }
-              if (data.success) {
-                this.$message({
-                  type: 'success',
-                  message: '登录成功'
-                })
-                let redirect = decodeURIComponent(this.$route.query.redirect || '/')
-                this.$router.push({
-                  path: redirect
-                })
-              } else {
-                this.$message({
-                  type: 'info',
-                  message: '密码错误'
-                })
-              }
-            })
-          } else {
-            return false
-          }
-        })
+import api from '../../store/api';
+
+export default {
+  components: {
+  },
+  data() {
+    return {
+      loginForm: {
+        username: '',
+        password: '',
       },
-      register () {
-        this.$router.push('/register')
+      delivery: false,
+      rules: {
+        username: [
+          {
+            required: true,
+            message: '请输入用户名或者邮箱',
+            trigger: 'blur',
+          },
+        ],
+        password: {
+          required: true,
+          message: '请输入密码',
+          trigger: 'blur',
+        },
+      },
+    };
+  },
+  mounted() {
+    api.wallpaper().then(res => {
+      if (res.data.success) {
+        document.querySelector('.login-panel').style.backgroundImage = `url('https://cn.bing.com${res.data.data.images[0].url}')`;
       }
+    });
+  },
+  methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => { // eslint-disable-line
+        if (valid) {
+          const opt = this.loginForm;
+          api.UserLogin(opt).then(({ data }) => {
+            if (!data.info) {
+              this.$message({
+                type: 'info',
+                message: '账号不存在',
+              });
+            }
+            if (data.success) {
+              this.$message({
+                type: 'success',
+                message: '登录成功',
+              });
+              const redirect = decodeURIComponent(this.$route.query.redirect || '/');
+              this.$router.push({
+                path: redirect,
+              });
+            } else {
+              this.$message({
+                type: 'info',
+                message: '密码错误',
+              });
+            }
+          });
+        } else {
+          return false;
+        }
+      });
     },
-    components: {
-    }
-  }
+    register() {
+      this.$router.push('/register');
+    },
+  },
+};
 </script>
 <style lang="scss">
   .login-panel {
@@ -146,7 +159,8 @@
         .login-title {
           font-size: 1.5rem;
           margin: 0 0 2rem;
-          font-family: -apple-system,PingFang SC,Hiragino Sans GB,Arial,Microsoft YaHei,Helvetica Neue,sans-serif;
+          font-family: -apple-system,PingFang SC,
+          Hiragino Sans GB,Arial,Microsoft YaHei,Helvetica Neue,sans-serif;
           text-rendering: optimizeLegibility;
           color: #333;
         }

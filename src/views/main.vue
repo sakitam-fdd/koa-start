@@ -1,78 +1,96 @@
 <template>
   <div class="hello">
     <h1>{{ message }}: {{ username }}</h1>
-    <transition-group name="list-complete" tag="ul">
-      <li v-for="(item, index) in user" :key="item._id" class="list-complete-item">
+    <transition-group
+      name="list-complete"
+      tag="ul"
+    >
+      <li
+        v-for="(item, index) in user"
+        :key="item._id"
+        class="list-complete-item"
+      >
         {{ index + 1 }}. {{ item.email }}
-        <el-button type="" @click="del_user(index)">删除</el-button>
+        <el-button
+          type=""
+          @click="del_user(index)"
+        >
+          删除
+        </el-button>
       </li>
     </transition-group>
     <br>
-    <el-button type="primary" @click="logout()">登出</el-button>
+    <el-button
+      type="primary"
+      @click="logout()"
+    >
+      登出
+    </el-button>
   </div>
 </template>
 <script>
-  import api from '../store/api'
-  export default {
-    name: 'main',
-    data () {
-      return {
-        message: '登录成功',
-        user: '',
-        username: ''
+import api from '../store/api';
+
+export default {
+  name: 'Main',
+  data() {
+    return {
+      message: '登录成功',
+      user: '',
+      username: '',
+    };
+  },
+  mounted() {
+    this.getUser();
+    this.username = localStorage.getItem('username');
+  },
+  methods: {
+    getUser() {
+      setTimeout(() => {
+        api.getUser().then(({ data }) => {
+          if (data.code === 401) {
+            console.log('token');
+            this.$router.push('/login');
+            this.$store.dispatch('UserLogout');
+            console.log(localStorage.token);
+          } else {
+            this.user = data;
+          }
+        });
+      }, 100);
+    },
+    logout() {
+      this.$store.dispatch('UserLogout');
+      if (!this.$store.state.token) {
+        this.$router.push('/login');
+        this.$message({
+          type: 'success',
+          message: '登出成功',
+        });
+      } else {
+        this.$message({
+          type: 'info',
+          message: '登出失败',
+        });
       }
     },
-    mounted () {
-      this.getUser()
-      this.username = localStorage.getItem('username')
+    delUser(id) {
+      const opt = {
+        id: this.user[id]._id,
+      };
+      api.delUser(opt).then(response => {
+        console.log(response);
+        this.$message({
+          type: 'success',
+          message: '删除成功',
+        });
+        this.get_User();
+      }).catch((err) => {
+        console.log(err);
+      });
     },
-    methods: {
-      getUser () {
-        setTimeout(() => {
-          api.getUser().then(({data}) => {
-            if (data.code === 401) {
-              console.log('token')
-              this.$router.push('/login')
-              this.$store.dispatch('UserLogout')
-              console.log(localStorage.token)
-            } else {
-              this.user = data
-            }
-          })
-        }, 100)
-      },
-      logout () {
-        this.$store.dispatch('UserLogout')
-        if (!this.$store.state.token) {
-          this.$router.push('/login')
-          this.$message({
-            type: 'success',
-            message: '登出成功'
-          })
-        } else {
-          this.$message({
-            type: 'info',
-            message: '登出失败'
-          })
-        }
-      },
-      delUser (id) {
-        let opt = {
-          id: this.user[id]._id
-        }
-        api.delUser(opt).then(response => {
-          console.log(response)
-          this.$message({
-            type: 'success',
-            message: '删除成功'
-          })
-          this.get_User()
-        }).catch((err) => {
-          console.log(err)
-        })
-      }
-    }
-  }
+  },
+};
 </script>
 <style scoped>
   h1,

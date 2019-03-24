@@ -2,7 +2,8 @@
 const path = require('path');
 const config = require('../config')
 const utils = require('./helper');
-const vueLoaderConfig = require('./vue-loader.conf')
+const vueLoaderConfig = require('./vue-loader.conf');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
   context: path.resolve(__dirname, '../'),
@@ -30,6 +31,7 @@ module.exports = {
     }
   },
   module: {
+    noParse: /^(vue|vue-router|vuex|vuex-router-sync)$/,
     rules: [
       {
         test: /\.(js|vue)$/,
@@ -76,6 +78,9 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new VueLoaderPlugin()
+  ],
   node: {
     setImmediate: false,
     dgram: 'empty',
