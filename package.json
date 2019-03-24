@@ -1,9 +1,9 @@
 {
   "name": "koa-start",
   "version": "1.0.0",
-  "description": "a koa&vue nodejs project",
-  "author": "FDD <smileFDD@gmail.com>",
-  "private": true,
+  "description": "a koa & vue nodejs project",
+  "author": "sakitam-fdd <smilefdd@gmail.com>",
+  "private": false,
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "npm run dev",

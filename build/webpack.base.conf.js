@@ -1,14 +1,11 @@
 'use strict'
-const path = require('path')
-const utils = require('./utils')
+const path = require('path');
 const config = require('../config')
+const utils = require('./helper');
 const vueLoaderConfig = require('./vue-loader.conf')
 
-function resolve (dir) {
-  return path.join(__dirname, '..', dir)
-}
-
 module.exports = {
+  context: path.resolve(__dirname, '../'),
   entry: {
     app: './src/main.js'
   },
@@ -20,10 +17,16 @@ module.exports = {
       : config.dev.assetsPublicPath
   },
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    modules: [utils.resolve('node_modules')],
+    extensions: [
+      '.js', '.vue', '.jsx',
+      '.json'
+    ],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src'),
+      '@': utils.resolve('src'),
+      'components': utils.resolve('src/components'),
+      'utils': utils.resolve('src/utils'),
     }
   },
   module: {
@@ -32,7 +35,7 @@ module.exports = {
         test: /\.(js|vue)$/,
         loader: 'eslint-loader',
         enforce: 'pre',
-        include: [resolve('src'), resolve('test')],
+        include: [utils.resolve('src'), utils.resolve('test')],
         options: {
           formatter: require('eslint-friendly-formatter')
         }
@@ -45,7 +48,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test')]
+        include: [utils.resolve('src'), utils.resolve('test')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -72,5 +75,13 @@ module.exports = {
         }
       }
     ]
+  },
+  node: {
+    setImmediate: false,
+    dgram: 'empty',
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+    child_process: 'empty'
   }
 }
