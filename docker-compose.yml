@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  server:
+    image: server
+    build:
+      context: ./
+      args:
+        NODE_ENV: development
+    hostname: server
+    depends_on:
+      - db
+      - redis
+      - nginx
+    environment:
+      - DATABASE_URL=postgres://postgres@db:5432/dev
+      - REDIS_URL=redis://redis:6379/0
+    ports:
+      - "8080:3333"
+  db:
+    image: postgres:11.2-alpine
+    restart: always # 每次启动重启进程
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: example
+      PGDATA: /var/lib/postgresql/data/pgdata
+  redis:
+    image: redis:4.0.6-alpine
+    read_only: true
+    volumes:
+      - redis:/data
+    user: redis
+  nginx:
+    image: nginx:latest
+    read_only: true
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
+      - ./dist/:/app/dist
+    ports:
+      - 6666:80
+    privileged: true
+
+volumes:
+  db:
+  redis:
+  nginx:
+  yarn:

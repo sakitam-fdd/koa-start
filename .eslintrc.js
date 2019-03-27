@@ -25,6 +25,7 @@ module.exports = {
   ],
   // add your custom rules here
   rules: {
+    'import/no-extraneous-dependencies': 0,
     'import/prefer-default-export': 0,
     'no-plusplus': 0,
     'import/no-unresolved': 0,

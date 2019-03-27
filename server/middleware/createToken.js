@@ -1,9 +1,10 @@
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+
 module.exports = function (userId) {
   const token = jwt.sign({
-    user_id: userId
+    user_id: userId,
   }, 'null', {
-    expiresIn: '60s'
-  })
-  return token
-}
+    expiresIn: '60s',
+  });
+  return token;
+};
